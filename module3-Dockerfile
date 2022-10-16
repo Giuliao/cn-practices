@@ -1,0 +1,18 @@
+# stage1: build binary
+FROM golang:1.19.2-alpine3.16 AS build
+RUN apk add --no-cache git
+COPY ./module2/  /go/src/module2
+WORKDIR /go/src/module2
+RUN go build -o /bin/server
+
+# stage2: build imag
+# FROM scratch
+# error exec ./server: no such file or directory
+FROM alpine:latest
+WORKDIR /
+COPY  --from=build /bin/server /bin/server
+ENV VERSION v1
+ENTRYPOINT [ "/bin/server"]
+CMD ["-logtostderr=true"]
+
+

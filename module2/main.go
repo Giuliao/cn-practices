@@ -138,12 +138,14 @@ func main() {
 			// 1. 接收客户端 request，并将 request 中带的 header 写入 response header
 			w.Header().Add(k, strings.Join(v, ", "))
 		}
+		w.Write([]byte("response write ok"))
 
 	}))
 
 	http.HandleFunc("/healthz", interceptor(func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("200 ok"))
 		// 4. 当访问 localhost/healthz 时，应返回 200
-		w.WriteHeader(http.StatusBadRequest)
+		w.WriteHeader(http.StatusOK)
 	}))
 	http.ListenAndServe(":3000", nil)
 }

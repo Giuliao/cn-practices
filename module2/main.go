@@ -18,12 +18,10 @@ import (
 )
 
 var portFlag int
-var signalFlag string
 var pidFlag int
 
 func init() {
 	flag.IntVar(&portFlag, "port", 3000, "port number")
-	flag.StringVar(&signalFlag, "signal", "", "send signal")
 	flag.IntVar(&pidFlag, "pid", 0, "pid number")
 }
 

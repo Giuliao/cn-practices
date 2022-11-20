@@ -8,6 +8,6 @@ run:
 
 build-image:
 	docker build -f Dockerfile . --target build --tag build-stage-image
-	docker build -f Dockerfile .  -t giuliao/module3-httpserver:v2.0
+	docker build -f Dockerfile .  -t giuliao/module3-httpserver:v2.1
 	docker rmi build-stage-image # 删除中间产物
 .PHONY: run

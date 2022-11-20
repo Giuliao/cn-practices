@@ -3,12 +3,11 @@ build:
 .PHONY: build
 
 run:
-	go run main.go -logtostderr true
+	VERSION=2 go run main.go -logtostderr=true -port=8080
 .PHONY: run
 
-
 build-image:
-	docker build -f Dockerfile . --target build --tag module2-build-stage
-	docker build -f Dockerfile .  -t giuliao/module2-demo:v1.0
-	docker rmi module2-build-stage # 删除中间产物
+	docker build -f Dockerfile . --target build --tag build-stage-image
+	docker build -f Dockerfile .  -t giuliao/module3-httpserver:v2.0
+	docker rmi build-stage-image # 删除中间产物
 .PHONY: run

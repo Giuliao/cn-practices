@@ -11,6 +11,5 @@ RUN go build -o /bin/server
 FROM alpine:latest
 WORKDIR /
 COPY  --from=build /bin/server /bin/server
-ENV VERSION v1
-ENTRYPOINT [ "/bin/server"]
-CMD ["-logtostderr=true"]
+ENTRYPOINT ["/bin/server"] 
+CMD ["-logtostderr=true", "-port=8080"]

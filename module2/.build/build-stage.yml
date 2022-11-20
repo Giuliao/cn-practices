@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wg-ns
+  labels:
+    name: wg-ns
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: simple-server-env-config
+  namespace: wg-ns
+data:
+  version: v2
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-server
+  namespace: wg-ns
+spec:
+  selector:
+    matchLabels:
+      app: simple-server
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: simple-server
+    spec:
+      containers:
+      - name: simple-server
+        image: giuliao/module3-httpserver:v2.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: simple-server-env-config
+              key: version
+        ports:
+        - containerPort: 8080
+        lifecycle:
+          preStop:
+            exec:
+              command: [ "/bin/sh","-c","while killall /bin/server; do sleep 1; done" ]
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1

@@ -12,8 +12,10 @@ import (
 	"time"
 
 	"github.com/golang/glog"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"geektime.com/practice/module2/handler"
+	"geektime.com/practice/module2/metrics"
 	"geektime.com/practice/module2/middleware"
 )
 
@@ -55,11 +57,14 @@ func newServerHandler() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", interceptor(handler.Index))
 	mux.HandleFunc("/healthz", interceptor(handler.Healthz))
+	mux.HandleFunc("/hello", handler.DelayedHello)
+	mux.Handle("/metrics", promhttp.Handler())
 	return mux
 }
 
 func main() {
 	flag.Parse()
+	metrics.Register()
 
 	wg := &sync.WaitGroup{}
 	server := http.Server{Addr: fmt.Sprintf(":%d", portFlag), Handler: newServerHandler()}

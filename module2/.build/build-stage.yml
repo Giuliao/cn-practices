@@ -25,6 +25,9 @@ spec:
   replicas: 3
   template:
     metadata:
+      annotation:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
       labels:
         app: simple-server
     spec:
